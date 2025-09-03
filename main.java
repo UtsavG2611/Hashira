@@ -1,101 +1,40 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
 
 public class main {
     public static void main(String[] args) {
-        // Test case 1
-        String testCase1 = "{ \n" +
-                "    \"keys\": { \n" +
-                "        \"n\": 4, \n" +
-                "        \"k\": 3 \n" +
-                "    }, \n" +
-                "    \"1\": { \n" +
-                "        \"base\": \"10\", \n" +
-                "        \"value\": \"4\" \n" +
-                "    }, \n" +
-                "    \"2\": { \n" +
-                "        \"base\": \"2\", \n" +
-                "        \"value\": \"111\" \n" +
-                "    }, \n" +
-                "    \"3\": { \n" +
-                "        \"base\": \"10\", \n" +
-                "        \"value\": \"12\" \n" +
-                "    }, \n" +
-                "    \"6\": { \n" +
-                "        \"base\": \"4\", \n" +
-                "        \"value\": \"213\" \n" +
-                "    } \n" +
-                "}"; 
+        try {
+            String testCase1 = readJsonFile("/Users/utsavgupta/Desktop/hashira/test1.json");
+            String testCase2 = readJsonFile("/Users/utsavgupta/Desktop/hashira/ex.json");
 
-        // Test case 2
-        String testCase2 = "{ \n" +
-                "\"keys\": { \n" +
-                "    \"n\": 10, \n" +
-                "    \"k\": 7 \n" +
-                "  }, \n" +
-                "  \"1\": { \n" +
-                "    \"base\": \"6\", \n" +
-                "    \"value\": \"13444211440455345511\" \n" +
-                "  }, \n" +
-                "  \"2\": { \n" +
-                "    \"base\": \"15\", \n" +
-                "    \"value\": \"aed7015a346d635\" \n" +
-                "  }, \n" +
-                "  \"3\": { \n" +
-                "    \"base\": \"15\", \n" +
-                "    \"value\": \"6aeeb69631c227c\" \n" +
-                "  }, \n" +
-                "  \"4\": { \n" +
-                "    \"base\": \"16\", \n" +
-                "    \"value\": \"e1b5e05623d881f\" \n" +
-                "  }, \n" +
-                "  \"5\": { \n" +
-                "    \"base\": \"8\", \n" +
-                "    \"value\": \"316034514573652620673\" \n" +
-                "  }, \n" +
-                "  \"6\": { \n" +
-                "    \"base\": \"3\", \n" +
-                "    \"value\": \"2122212201122002221120200210011020220200\" \n" +
-                "  }, \n" +
-                "  \"7\": { \n" +
-                "    \"base\": \"3\", \n" +
-                "    \"value\": \"20120221122211000100210021102001201112121\" \n" +
-                "  }, \n" +
-                "  \"8\": { \n" +
-                "    \"base\": \"6\", \n" +
-                "    \"value\": \"20220554335330240002224253\" \n" +
-                "  }, \n" +
-                "  \"9\": { \n" +
-                "    \"base\": \"12\", \n" +
-                "    \"value\": \"45153788322a1255483\" \n" +
-                "  }, \n" +
-                "  \"10\": { \n" +
-                "    \"base\": \"7\", \n" +
-                "    \"value\": \"1101613130313526312514143\" \n" +
-                "  } \n" +
-                "}"; 
-
-        // Process test cases
-        System.out.println("Test Case 1 Result:");
-        processTestCase(testCase1);
-        
-        System.out.println("\nTest Case 2 Result:");
-        processTestCase(testCase2);
+            System.out.println("Test Case 1 Result:");
+            processTestCase(testCase1);
+            
+            System.out.println("\nTest Case 2 Result:");
+            processTestCase(testCase2);
+        } catch (IOException e) {
+            System.out.println("Error reading JSON files: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static String readJsonFile(String filePath) throws IOException {
+        return new String(Files.readAllBytes(Paths.get(filePath)));
     }
     
     private static void processTestCase(String jsonStr) {
         try {
-            // Parse the JSON string manually
             Map<String, Object> jsonData = parseJson(jsonStr);
             
-            // Extract keys
             Map<String, Object> keys = (Map<String, Object>) jsonData.get("keys");
             int n = Integer.parseInt(keys.get("n").toString());
             int k = Integer.parseInt(keys.get("k").toString());
             
             System.out.println("n = " + n + ", k = " + k);
             
-            // Collect and decode the roots
             double[] roots = new double[k];
             int rootIndex = 0;
             
@@ -105,7 +44,6 @@ public class main {
                     String base = rootData.get("base").toString();
                     String value = rootData.get("value").toString();
                     
-                    // Decode the value from the given base to decimal
                     double decodedValue = decodeValue(value, base);
                     roots[rootIndex++] = decodedValue;
                     
@@ -117,12 +55,6 @@ public class main {
                 }
             }
             
-            // Calculate the constant C using Vieta's formulas
-            // For a quadratic equation ax^2 + bx + c = 0 with roots r and s:
-            // r + s = -b/a and r*s = c/a
-            // Therefore, c = a * r * s
-            
-            // Assuming a = 1 for simplicity (ax^2 + bx + c becomes x^2 + bx + c)
             double constantC = calculateConstantC(roots);
             
             System.out.println("Constant C = " + constantC);
@@ -134,23 +66,17 @@ public class main {
     }
     
     private static double calculateConstantC(double[] roots) {
-        // For a quadratic equation with roots r and s: c = a * r * s (assuming a = 1)
-        // For higher degree polynomials, we need to use the appropriate formula
-        
-        // For this problem, we're told it's a quadratic equation ax^2 + bx + c
-        // So we need the product of all roots
         double product = 1.0;
         for (double root : roots) {
             product *= root;
         }
         
-        return product; // Assuming a = 1
+        return product;
     }
     
     private static double decodeValue(String value, String baseStr) {
         int base = Integer.parseInt(baseStr);
         
-        // Handle bases > 10 which may include letters
         double result = 0;
         for (int i = 0; i < value.length(); i++) {
             char c = value.charAt(i);
@@ -177,10 +103,8 @@ public class main {
     }
     
     private static Map<String, Object> parseJson(String jsonStr) {
-        // A simple JSON parser for the given format
         Map<String, Object> result = new HashMap<>();
         
-        // Remove curly braces and whitespace
         jsonStr = jsonStr.trim();
         if (jsonStr.startsWith("{")) {
             jsonStr = jsonStr.substring(1);
@@ -189,7 +113,6 @@ public class main {
             jsonStr = jsonStr.substring(0, jsonStr.length() - 1);
         }
         
-        // Split by commas not inside nested objects
         int depth = 0;
         StringBuilder currentPart = new StringBuilder();
         for (int i = 0; i < jsonStr.length(); i++) {
@@ -209,7 +132,6 @@ public class main {
             }
         }
         
-        // Process the last part
         if (currentPart.length() > 0) {
             processPart(currentPart.toString(), result);
         }
@@ -223,7 +145,6 @@ public class main {
             return;
         }
         
-        // Find the first colon not inside nested objects
         int colonIndex = -1;
         int depth = 0;
         for (int i = 0; i < part.length(); i++) {
@@ -246,17 +167,13 @@ public class main {
         String key = part.substring(0, colonIndex).trim();
         String value = part.substring(colonIndex + 1).trim();
         
-        // Remove quotes from key
         if (key.startsWith("\"") && key.endsWith("\"")) {
             key = key.substring(1, key.length() - 1);
         }
         
-        // Process value based on its type
         if (value.startsWith("{") && value.endsWith("}")) {
-            // Nested object
             result.put(key, parseJson(value));
         } else if (value.startsWith("\"") && value.endsWith("\"")) {
-            // String value
             result.put(key, value.substring(1, value.length() - 1));
         } else if (value.equals("true")) {
             result.put(key, true);
@@ -265,7 +182,6 @@ public class main {
         } else if (value.equals("null")) {
             result.put(key, null);
         } else {
-            // Try to parse as number
             try {
                 if (value.contains(".")) {
                     result.put(key, Double.parseDouble(value));
@@ -273,7 +189,6 @@ public class main {
                     result.put(key, Integer.parseInt(value));
                 }
             } catch (NumberFormatException e) {
-                // If not a number, store as string
                 result.put(key, value);
             }
         }
