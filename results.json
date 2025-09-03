@@ -1,0 +1,18 @@
+{
+  "assignment": "Hashira Placements Assignment",
+  "method": "Shamir's Secret Sharing with Lagrange Interpolation",
+  "results": [
+    {
+      "testCase": 1,
+      "secret": 3,
+      "polynomialDegree": 2,
+      "pointsUsed": 3
+    },
+    {
+      "testCase": 2,
+      "secret": -6290016743746474000,
+      "polynomialDegree": 6,
+      "pointsUsed": 7
+    }
+  ]
+}
